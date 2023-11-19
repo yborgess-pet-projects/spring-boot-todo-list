@@ -1,0 +1,201 @@
+# PostgreSQL Data Base
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list-postgresql
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: deployment
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: todo-list
+      app.kubernetes.io/component: database
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: todo-list
+        app.kubernetes.io/component: database
+        tier: backend
+    spec:
+      containers:
+        - name: todo-list-database
+          image: postgres:16.0
+          ports:
+            - name: db-port
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  key: database-user
+                  name: todo-list-secret
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: database-password
+                  name: todo-list-secret
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  key: database-name
+                  name: todo-list-secret
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: todo-list-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: todo-list-storage
+          persistentVolumeClaim:
+            claimName: todo-list-database-pvc
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-list-database-svc
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: service
+    tier: backend
+spec:
+  selector:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: database
+    tier: backend
+  ports:
+    - name: db-port-svc
+      port: 5432
+      protocol: TCP
+      targetPort: db-port
+---
+# PostgreSQL storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: todo-list-database-pvc
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: storage
+    tier: backend
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Spring Boot application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list-backend-deployment
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: deployment
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: todo-list
+      app.kubernetes.io/component: server
+      tier: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: todo-list
+        app.kubernetes.io/component: server
+        tier: backend
+    spec:
+      containers:
+        - name: todo-list-backend
+          image: quay.io/yborgess/todo-list-spring-boot-backend
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: ORG_DEMO_TODOLIST_CORS_ALLOWED_ORIGINS
+              value: "*"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: database-user
+                  name: todo-list-secret
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: database-password
+                  name: todo-list-secret
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  key: database-name
+                  name: todo-list-secret
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(TODO_LIST_DATABASE_SVC_SERVICE_HOST):$(TODO_LIST_DATABASE_SVC_SERVICE_PORT)/$(POSTGRES_DB)"
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: http
+            failureThreshold: 3
+            periodSeconds: 5
+            initialDelaySeconds: 5
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health/readiness"
+              port: http
+            failureThreshold: 1
+            periodSeconds: 5
+            initialDelaySeconds: 5
+            successThreshold: 1
+          startupProbe:
+            httpGet:
+              path: "/actuator/health/liveness"
+              port: http
+            failureThreshold: 5
+            periodSeconds: 5
+            initialDelaySeconds: 5
+            successThreshold: 1
+---
+# Application service
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-list-backend-svc
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: service
+    tier: backend
+spec:
+  selector:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: server
+    tier: backend
+  ports:
+    - name: http-svc
+      port: 80
+      protocol: TCP
+      targetPort: http
+---
+# Secret for database configuration
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: todo-list-secret
+  labels:
+    app.kubernetes.io/name: todo-list
+    app.kubernetes.io/component: configuration
+    tier: backend
+data:
+  database-name: dG9kb3NfZGI= # todos_db
+  database-password: cGFzc3dvcmQ= # password
+  database-user: dXNlcg== # user
