@@ -1,4 +1,4 @@
-package org.demo.todolist;
+package org.springboot.demo.todolist;
 
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.context.ApplicationListener;

@@ -1,5 +1,6 @@
-package org.demo.todolist.todos;
+package org.springboot.demo.todolist.todos;
 
+import jakarta.json.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping("/api/v1/todos")
 public class TodoResource {
@@ -33,7 +35,7 @@ public class TodoResource {
         return ResponseEntity.ok(all);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Todo> getById(@PathVariable Long id) throws TodoNotFoundException {
         Optional<Todo> optional = repository.findById(id);
 

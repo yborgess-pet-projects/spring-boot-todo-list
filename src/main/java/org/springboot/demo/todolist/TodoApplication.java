@@ -1,6 +1,6 @@
-package org.demo.todolist;
+package org.springboot.demo.todolist;
 
-import org.demo.todolist.config.TodoListProperties;
+import org.springboot.demo.todolist.config.TodoListProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

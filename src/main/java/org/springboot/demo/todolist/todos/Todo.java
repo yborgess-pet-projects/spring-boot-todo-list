@@ -1,4 +1,4 @@
-package org.demo.todolist.todos;
+package org.springboot.demo.todolist.todos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

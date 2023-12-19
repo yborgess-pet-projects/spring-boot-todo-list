@@ -1,4 +1,4 @@
-package org.demo.todolist.todos;
+package org.springboot.demo.todolist.todos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

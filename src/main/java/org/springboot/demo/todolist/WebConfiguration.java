@@ -1,6 +1,6 @@
-package org.demo.todolist;
+package org.springboot.demo.todolist;
 
-import org.demo.todolist.config.TodoListProperties;
+import org.springboot.demo.todolist.config.TodoListProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;

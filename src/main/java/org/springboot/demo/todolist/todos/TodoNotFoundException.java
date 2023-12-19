@@ -1,4 +1,4 @@
-package org.demo.todolist.todos;
+package org.springboot.demo.todolist.todos;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

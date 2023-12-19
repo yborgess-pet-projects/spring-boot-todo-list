@@ -1,7 +1,7 @@
-package org.demo.todolist;
+package org.springboot.demo.todolist;
 
-import org.demo.todolist.todos.Todo;
-import org.demo.todolist.todos.TodoNotFoundException;
+import org.springboot.demo.todolist.todos.Todo;
+import org.springboot.demo.todolist.todos.TodoNotFoundException;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
