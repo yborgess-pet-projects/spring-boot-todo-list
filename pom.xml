@@ -22,6 +22,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <version.org.testcontainers.testcontainers-bom>1.19.3</version.org.testcontainers.testcontainers-bom>
         <version.springdoc-openapi>2.2.0</version.springdoc-openapi>
+        <version.eclipse.parsson>1.1.5</version.eclipse.parsson>
+        <version.jackson.datatype>2.16.0</version.jackson.datatype>
     </properties>
 
     <dependencyManagement>
@@ -45,6 +47,18 @@
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.parsson</groupId>
+            <artifactId>parsson</artifactId>
+            <version>${version.eclipse.parsson}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jakarta-jsonp</artifactId>
+            <version>${version.jackson.datatype}</version>
         </dependency>
 
         <dependency>

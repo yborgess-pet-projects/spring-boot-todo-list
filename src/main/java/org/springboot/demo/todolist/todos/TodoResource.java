@@ -1,6 +1,8 @@
 package org.springboot.demo.todolist.todos;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonMergePatch;
+import jakarta.json.JsonValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +25,11 @@ import java.util.Optional;
 @RequestMapping("/api/v1/todos")
 public class TodoResource {
     private final TodoRepository repository;
+    private final ObjectMapper mapper;
 
-    public TodoResource(TodoRepository repository) {
+    public TodoResource(TodoRepository repository, ObjectMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @GetMapping
@@ -58,21 +62,18 @@ public class TodoResource {
                 .body(saved);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Todo> patchResource(@PathVariable Long id, @RequestBody Map<String, Object> updates) throws TodoNotFoundException {
+    @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<Todo> patchResource(@PathVariable Long id, @RequestBody JsonMergePatch updates) throws TodoNotFoundException {
         Optional<Todo> optTodo = repository.findById(id);
         Todo found = optTodo.orElseThrow(() -> new TodoNotFoundException(id));
-        if (updates.containsKey("completed")) {
-            found.setCompleted((Boolean) updates.get("completed"));
-        }
-        if (updates.containsKey("title")) {
-            found.setTitle((String) updates.get("title"));
-        }
 
-        found = repository.save(found);
+        JsonValue target = mapper.convertValue(found, JsonValue.class);
+        JsonValue patched = updates.apply(target);
+        Todo patchedTodo = mapper.convertValue(patched, Todo.class);
+        patchedTodo = repository.save(patchedTodo);
 
         return ResponseEntity
-                .ok(found);
+                .ok(patchedTodo);
     }
 
     @PutMapping("/{id}")

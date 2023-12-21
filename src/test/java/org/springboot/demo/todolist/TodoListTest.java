@@ -101,7 +101,7 @@ class TodoListTest {
         webTestClient
                 .patch()
                 .uri("/api/v1/todos/1")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(new MediaType("application", "merge-patch+json"))
                 .bodyValue("{\"title\":\"" + expectedTodo.getTitle() + "\"}")
                 .exchange()
                 .expectStatus().isOk()
