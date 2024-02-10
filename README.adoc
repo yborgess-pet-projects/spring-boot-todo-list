@@ -26,7 +26,7 @@ This API is the backend of https://github.com/yborgess-pet-projects/react-todo-l
 +
 [source]
 ----
-$ podman compose -f ./deployment/container/postgresql.yml up -d
+$ podman-compose -f ./deployment/container/postgresql.yml up -d
 ----
 +
 2. Build the project and launch the application using Spring Boot maven plugin:
@@ -87,7 +87,7 @@ You can check the OpenAPI and Swagger resources to get more information about ho
 +
 [source]
 ----
-$ podman compose -f ./deployment/container/postgresql.yml down
+$ podman-compose -f ./deployment/container/postgresql.yml down
 ----
 
 == How to run it as a container
@@ -103,7 +103,7 @@ $ mvn clean spring-boot:build-image -Dspring-boot.build-image.imageName=quay.io/
 +
 [source]
 ----
-$ podman compose \
+$ podman-compose\
   -f ./deployment/container/postgresql.yml \
   -f ./deployment/container/todo-list-app.yml \
   up
@@ -120,7 +120,7 @@ $ http POST :8080/api/v1/todos title="Read Spring Boot documentation"
 +
 [source]
 ----
-$ podman compose \
+$ podman-compose\
   -f ./deployment/container/postgresql.yml \
   -f ./deployment/container/todo-list-app.yml \
   down
@@ -155,7 +155,7 @@ todo-list-postgresql-6dd7d8d74b-pfz74          1/1     Running   0          55s
 The application is deployed using the prod profile, and it is not exposed to the outside. You can use the frontend application to interact with it.
 
 === Cleanup the resources
-To delete all the resources created by the backend, execute the folloing:
+To delete all the resources created by the backend, execute the following:
 
 [source]
 ----
