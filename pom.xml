@@ -20,7 +20,7 @@
         <java.version>21</java.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <version.org.testcontainers.testcontainers-bom>1.19.4</version.org.testcontainers.testcontainers-bom>
+        <version.org.testcontainers.testcontainers-bom>1.19.5</version.org.testcontainers.testcontainers-bom>
         <version.springdoc-openapi>2.3.0</version.springdoc-openapi>
         <version.eclipse.parsson>1.1.5</version.eclipse.parsson>
         <version.jackson.datatype>2.16.1</version.jackson.datatype>
